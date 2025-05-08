@@ -1,0 +1,8 @@
+"0","#Cleaning Data"
+"0","Spotify$explicit = factor(Spotify$explicit, levels = c(""False"", ""True""))"
+"0","Spotify$mode = factor(Spotify$mode, levels = c(""0"", ""1""), labels = c(""Minor"", ""Major""))"
+"0","Spotify$track_genre = factor(Spotify$track_genre)"
+"0","Spotify$key = factor(Spotify$key)"
+"0","Spotify$time_signature = factor(Spotify$time_signature,"
+"0","                                levels = c(""0"", ""1"", ""2"", ""3"", ""4""),"
+"0","                                labels = c(""3/4"", ""4/4"", ""5/4"", ""6/4"", ""7/4""))"

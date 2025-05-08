@@ -1,0 +1,5 @@
+"0","library(ggplot2)"
+"0","Spotify = read.csv(""dataset.csv"", header = TRUE)"
+"2","Warning: cannot open file 'dataset.csv': No such file or directory"
+"2","Error in file(file, ""rt"") : cannot open the connection
+"

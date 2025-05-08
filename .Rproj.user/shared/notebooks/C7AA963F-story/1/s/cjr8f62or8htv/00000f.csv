@@ -1,0 +1,3 @@
+"0","#Create Pop Dataset"
+"0","Pop = Spotify[Spotify$track_genre == ""pop"", ]"
+"0","attach(Pop)"

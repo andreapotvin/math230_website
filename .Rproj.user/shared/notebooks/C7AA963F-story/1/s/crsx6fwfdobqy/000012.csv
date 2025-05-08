@@ -1,0 +1,7 @@
+"0","# Graph 4 ~ Violin Plot"
+"0","ggplot(Pop, aes(x = as.factor(time_signature), y = popularity)) +"
+"0","  geom_violin(fill = ""#1DB954"") +"
+"0","  geom_boxplot(alpha = .2) +"
+"0","  labs(title = ""Track Popularity Given Time Signature"", "
+"0","       x = ""Time Signature (Beats per Bar/Measure)"", y = ""Popularity"") +"
+"0","  theme_light()"

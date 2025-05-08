@@ -1,0 +1,246 @@
+---
+title: "Interactive"
+author: "Andrea Potvin"
+date: "2025-05-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE}
+library(ggplot2)
+Spotify = read.csv("dataset.csv", header = TRUE)
+```
+
+```{r, echo = FALSE}
+#Cleaning Data
+Spotify$explicit = factor(Spotify$explicit, levels = c("False", "True"))
+Spotify$mode = factor(Spotify$mode, levels = c("0", "1"), labels = c("Minor", "Major"))
+Spotify$track_genre = factor(Spotify$track_genre)
+Spotify$key = factor(Spotify$key)
+Spotify$time_signature = factor(Spotify$time_signature,
+                                levels = c("0", "1", "2", "3", "4"),
+                                labels = c("3/4", "4/4", "5/4", "6/4", "7/4"))
+```
+
+```{r, echo = FALSE}
+#Create Pop Dataset
+Pop = Spotify[Spotify$track_genre == "pop", ]
+attach(Pop)
+```
+
+```{r, echo = FALSE, results='hide'}
+# Setup
+install.packages("plotly")
+install.packages("shiny")
+library(plotly)
+library(shiny)
+```
+
+```{r, echo = FALSE}
+# Custom Theme
+AmpedTones = c("#1DB954", "#984EA3", "#0095b9", "#F78C8C", "#2E5A88",
+               "#A83854", "#E69F00", "#CC79A7", "#F0E442", "#D55E00")
+```
+
+```{r}
+#Data Sets
+hipHop = Spotify[Spotify$track_genre == "hip-hop", ]
+rock = Spotify[Spotify$track_genre == "rock", ]
+country = Spotify[Spotify$track_genre == "country", ]
+rnb = Spotify[Spotify$track_genre == "country", ]
+electronic = Spotify[Spotify$track_genre == "electronic", ]
+indie = Spotify[Spotify$track_genre == "indie", ]
+folk = Spotify[Spotify$track_genre == "folk", ]
+```
+
+```{r, echo = FALSE, results='hide'}
+# Graph 1 ~ Interactive
+genres = list(
+  pop = Pop,
+  country = country,
+  electronic = electronic,
+  folk = folk,
+  hipHop = hipHop,
+  indie = indie,
+  rnb = rnb,
+  rock = rock
+)
+
+ui = fluidPage(
+  titlePanel("Track Popularity Based on Genre"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      checkboxGroupInput("dists", "Choose Track Genre to Display:",
+                         choices = names(genres),
+                         selected = "pop")
+    ),
+    
+    mainPanel(
+      plotlyOutput("histPlot"),
+      br(),
+      tableOutput("meanTable")
+    )
+  )
+)
+
+  server = function(input, output) {
+  output$histPlot = renderPlotly({
+    selected_dists = input$dists
+    
+    p = plot_ly()
+    
+    i = 1
+
+    for (name in names(genres)) {
+      values = genres[[name]]$popularity
+      mu = mean(values)
+      color = AmpedTones[i]
+    }
+    
+    for (name in selected_dists) {
+      values = genres[[name]]$popularity
+      mu = mean(values)
+      color = AmpedTones[i]
+      p = add_histogram(p,
+                         x = genres[[name]]$popularity,
+                         name = name,
+                         opacity = 0.6,
+                         marker = list(color = color, line = list(width = 1)))
+    
+      p = add_segments(
+    p,
+    x = mu, xend = mu,
+    y = 0, yend = 750,
+    line = list(color = color, dash = "dash"),
+    name = paste(name, "Mean"),
+    showlegend = FALSE
+  )
+         i = i + 1
+    }
+    
+    p = layout(p,
+           barmode = "overlay",
+           title = "Track Popularity Distribution by Genre<br><sup>(Dash line indicates genre's mean track popularity score)</sup>",
+           xaxis = list(title = "Popularity"),
+           yaxis = list(title = "Frequency"))
+    p
+})
+  
+  output$meanTable = renderTable({
+      selected_dists = input$dists
+    
+    mean_scores = sapply(selected_dists, function(name) {
+      mean(genres[[name]]$popularity, na.rm = TRUE)
+    }) 
+    
+  data.frame(
+    Genre = names(mean_scores),
+    'Mean Popularity Score' = round(mean_scores, 1),
+    check.names = FALSE
+  )
+  })
+}
+
+shinyApp(ui, server)
+```
+
+
+***
+
+Pretty sure above is the same but just to confirm
+
+```{r, echo = FALSE, results='hide'}
+# Graph 1 ~ Interactive
+genres = list(
+  pop = Pop,
+  country = country,
+  electronic = electronic,
+  folk = folk,
+  hipHop = hipHop,
+  indie = indie,
+  rnb = rnb,
+  rock = rock
+)
+
+ui = fluidPage(
+  titlePanel("Track Popularity Based on Genre"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      checkboxGroupInput("dists", "Choose Track Genre to Display:",
+                         choices = names(genres),
+                         selected = "pop")
+    ),
+    
+    mainPanel(
+      plotlyOutput("histPlot"),
+      br(),
+      tableOutput("meanTable")
+    )
+  )
+)
+
+  server = function(input, output) {
+  output$histPlot = renderPlotly({
+    selected_dists = input$dists
+    
+    p = plot_ly()
+    
+    i = 1
+
+    for (name in names(genres)) {
+      values = genres[[name]]$popularity
+      mu = mean(values)
+      color = AmpedTones[i]
+    }
+    
+    for (name in selected_dists) {
+      values = genres[[name]]$popularity
+      mu = mean(values)
+      color = AmpedTones[i]
+      p = add_histogram(p,
+                         x = genres[[name]]$popularity,
+                         name = name,
+                         opacity = 0.6,
+                         marker = list(color = color, line = list(width = 1)))
+    
+      p = add_segments(
+    p,
+    x = mu, xend = mu,
+    y = 0, yend = 750,
+    line = list(color = color, dash = "dash"),
+    name = paste(name, "Mean"),
+    showlegend = FALSE
+  )
+         i = i + 1
+    }
+    
+    p = layout(p,
+           barmode = "overlay",
+           title = "Track Popularity Distribution by Genre<br><sup>(Dash line indicates genre's mean track popularity score)</sup>",
+           xaxis = list(title = "Popularity"),
+           yaxis = list(title = "Frequency"))
+    p
+})
+  
+  output$meanTable = renderTable({
+      selected_dists = input$dists
+    
+    mean_scores = sapply(selected_dists, function(name) {
+      mean(genres[[name]]$popularity, na.rm = TRUE)
+    }) 
+    
+  data.frame(
+    Genre = names(mean_scores),
+    'Mean Popularity Score' = round(mean_scores, 1),
+    check.names = FALSE
+  )
+  })
+}
+
+shinyApp(ui, server)
+```

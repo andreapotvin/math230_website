@@ -1,0 +1,7 @@
+"0","# Graph 5 ~ Contour Plot"
+"0","ggplot(Pop, aes(x = liveness, y = popularity)) +"
+"0","  stat_density_2d(aes(fill = after_stat(level)), geom = ""polygon"", color = ""grey"") +"
+"0","  labs(title = ""Track Popularity Given Liveness"", "
+"0","       x = ""Liveness"", y = ""Popularity"", fill = ""Density\n Level"") +"
+"0","  scale_fill_gradient(low = ""#1DB954"", high = ""#2E5A88"") +"
+"0","  theme_light()"

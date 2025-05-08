@@ -1,0 +1,3 @@
+"0",""
+"0","text(x = rev(artist_scores) + 0.1, y = boxplot, labels = round(rev(artist_scores), 1), "
+"0","     cex = 0.8, pos = 4)"

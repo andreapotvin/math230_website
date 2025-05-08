@@ -1,0 +1,199 @@
+---
+title: "Art Exhibit"
+description: |
+  This exhibit is a display of projects I created in my Math230, Data Visualizations and Computing course.
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+library(ggplot2)
+```
+
+# Generative Artwork
+
+### Mr. Messy
+
+![Mr.Messy](mr.messy.png)
+<!-- ```{r, echo = False} -->
+<!-- set.seed(1) -->
+<!-- artwork1 = canvas_collatz(colors = colorPalette("blossom"), background = "white", -->
+<!--                           n = 460, angle.even = 0.0222, angle.odd = 0.3022, -->
+<!--                           side = FALSE) -->
+<!-- saveCanvas(artwork1, filename = "Mr.Messy.png") -->
+<!-- ``` -->
+
+### Feathered
+
+![Feathered](feathered.png)
+<!-- # ```{r, echo = FALSE} -->
+<!-- # set.seed(2) -->
+<!-- # artwork2 = canvas_flow(colors = c("#ef5b04", "#003565", "#a8aaac"), -->
+<!-- #                        background = "white", lines = 2000,  -->
+<!-- #                        lwd = 0.15, iterations = 160, -->
+<!-- #                        stepmax = 0.02, outline = "square",  -->
+<!-- #                        polar = FALSE, angles = NULL) -->
+<!-- # saveCanvas(artwork2, filename = "Feathered.png") -->
+<!-- # ``` -->
+
+***
+
+# Grammar of Graphics Extension (ggplot2)
+
+### ggbump
+
+```{r, echo = FALSE, results='hide'}
+library(ggplot2)
+library(ggbump)
+library(dplyr)
+library(tibble)
+#loading in dataset
+
+NFL_2014 = Lock5Data:: NFLPreSeason2014
+attach(NFL_2014)
+team_levels <- c("BLT", "BUF", "CHI", "CIN", "CLV", "DET", "GB","MIN",
+"NE", "NYG", "NYJ", "PHI", "PIT", "WAS", "IND","MIA",
+"ATL", "CAR", "DAL", "HST", "JAX", "NO", "TB", "TEN",
+"ARZ", "DEN", "KC", "OAK", "SD", "SEA", "SF", "SL")
+
+region_labels <- c(rep("North", 8), rep("East", 8), rep("South", 8), rep("West", 8))
+
+# Assign regions using cut()
+NFL_2014$Region <- cut(match(Team, team_levels),
+breaks = c(0, 8, 16, 24, 32),
+labels = c("North", "East", "South", "West"))
+
+# Summarize total wins per season and region
+df <- NFL_2014 %>%
+group_by(Season, Region) %>%
+summarise(Wins = sum(RegularWins), .groups = "drop") %>%
+ungroup()
+# Rank teams within each season by total wins, ensuring max rank is 8
+df <- df %>%
+group_by(Season) %>%
+mutate(Rank = rank(-Wins, ties.method = "random")) %>% # Use -Wins to rank in descending order
+filter(Rank <= 8) %>% # Keep only the top 8 teams
+ungroup()
+# Print the first few rows of the final dataframe
+knitr::kable(head(df))
+
+df2 <- NFL_2014 %>%
+group_by(Season, Region) %>%
+summarise(Wins = sum(Preseason), .groups = "drop") %>%
+ungroup()
+df2 <- df2 %>%
+group_by(Season) %>%
+mutate(preSeasonRank = rank(-Wins, ties.method = "random")) %>%
+filter(preSeasonRank <= 8) %>%
+ungroup()
+knitr::kable(head(df2))
+```
+
+
+```{r, echo = FALSE}
+ggplot(df2, aes(x = Season, y = preSeasonRank, group = Region, color = Region)) +
+  geom_bump(smooth = 6) +
+  geom_point(size = 2) +
+  labs(y = "Preseason rank", x = "Year") +
+  scale_x_continuous(limits = c(2010, 2013), breaks = seq(2010,2013, 1 )) +
+  scale_y_reverse()+
+  theme(plot.background = element_rect(fill = "red")) +
+  theme(panel.background = element_rect("lightblue")) +
+  ggtitle("Rank of Region Based on Preseason Wins") +
+  theme(plot.title = element_text(color = "white"))+
+  scale_color_brewer(palette = "Dark2")
+```
+**Bump Plot of Rank of Region Based on Preseason Wins**
+This graph uses the ggbump extension from the many available extensions with ggplot. A ggbump plot creates bump charts which are useful when plotting rankings over time and allows you to see how the ranks vary over time. For this project we used the NFLPreSeason2014 data set from the Lock5Data package. This data set includes the number of preseason and regular season wins for NFL teams each year from 2005 to 2014. It included 320 observations and for each, the team name, season year (2005-2014), number of preseason wins, and number of regular wins. For the above graph we looked at how the number of preseason wins of each region ranked for each season from 2010 to 2013. In order to do this we grouped teams into regions and then their corresponding preseason wins into wins, so then the total number of preseason wins per region could be seen for every season. This visualization shows that the West and South had the most consistent win patterns throughout the seasons. The South had the least amount of preseason wins in 2010, 2011, and 2013, however 2012 they had the largest number of preseason wins among the regions. The West had the second highest number of preseason wins in 2010, 2012, and 2013, but had the third in 2011. The East also had a win pattern with the third highest number of wins in 2010 and 2013, and the greatest number of wins in 2011 and 2013. The North had the most varying pattern of preseason wins over the seasons, the largest in 2010, the second largest in 2011, the smallest in 2012, and the third in 2013. This shows us that the West and South tend to rank in similar position over the seasons, but overall the region does not seem to significantly affect the number of preseason wins.    
+
+***
+
+# Sampling Distributions Dashboard
+
+<iframe src="https://abby-flynt.shinyapps.io/SamplingDistributions_Dashboard_Team1/" class="l-screen-inset shaded" height="1000px"></iframe>
+
+**Sampling Distributions**
+This dashboard was created with the goal of helping teach students in introduction to statistics classes about sampling distributions and to help clarify aspects that can be confusing to students, therefore explaining sampling distributions in a clear way. We did through definitions, descriptions, and interactives. One interactive demonstrate the process of creating a sampling distribution and the other demonstrates how the law of large numbers and the central limit theorem are utilized in sampling distributions. Explore the different sections of the dashboard and play around with interactives!
+
+***
+
+### Density Heatmap
+
+```{r, echo = FALSE, results='hide'}
+#fixing and inserting dataset
+library(Lock5Data)
+data(CollegeScores)
+
+missing.vals = function(dataframe){
+  # takes in a data frame and stores the number of missing observations in each column of the data frame in a vector
+  NAs = colSums(is.na(dataframe))
+  return(NAs)
+}
+
+CollegeData = CollegeScores[complete.cases(CollegeScores), ]
+missing.vals(CollegeData)
+rm(CollegeScores)
+
+CollegeData = CollegeData[CollegeData$Name != "University of the Virgin Islands", ]
+
+CollegeData$Locale = factor(CollegeData$Locale)
+CollegeData$Region = factor(CollegeData$Region)
+
+CollegeData$Main = factor(CollegeData$Main, levels = c(0, 1), 
+                          labels = c("Branch Campus", "Main Campus"))
+CollegeData$MainDegree = factor(CollegeData$MainDegree, levels = c(0, 1, 2, 3, 4), 
+                    labels = c("Not Classified", "Certificate", 
+                               "Associate", "Bachelors", "Only Graduate"))
+CollegeData$HighDegree = factor(CollegeData$HighDegree, levels = c(0, 1, 2, 3, 4), 
+                    labels = c("No Degrees", "Certificate", 
+                               "Associate", "Bachelors", "Graduate"))
+
+CollegeData$MainDegree = factor(CollegeData$MainDegree)
+CollegeData$HighDegree = factor(CollegeData$HighDegree)
+
+names(CollegeData)[names(CollegeData) == "Control"] = "Type"
+
+attach(CollegeData)
+```
+
+
+```{r, echo = FALSE}
+ggplot(CollegeData, aes(CollegeData$AdmitRate*100, CollegeData$CompRate)) +
+  stat_density_2d(aes(fill = after_stat(level)),
+                  geom = "polygon", color = "white", h = c(40,40)) +
+  scale_fill_distiller(palette = "BuPu") +
+  geom_point(size = .6, shape = 4, color = "black") +
+  labs(x = "Admission Rate", y = "Completion Rate",
+       title = "Students Coming in & Going out", fill = "Density") +
+  scale_x_continuous(labels = function(x)paste(x,"%")) +
+  scale_y_continuous(labels = function(x)paste(x,"%")) +
+  theme_light()
+```
+**Schools Completion Rate Given their Admission Rate**
+This graph uses the CollegeScores data set from the Lock5Data package. This data set includes information on all US post-secondary schools collected by the Department of Education for the College Scorecard. There are 6141 observations that include 37 variables. This graph looks at the CompRate variable given the AdmitRate variable. The CompRate variable is the completion rate, percent who finish program within 150% of normal time, for each school and the AdmitRate variable is the admission rate for each school. The graph Students Coming in & Going out depicts the density heatmap of the distribution of data points across admission rate and completion rate. The blue/purple color gradient of the graph represents the density of the observations. The lighter blue colors represent areas with more data points while as the color gets more purple, this represents areas that have fewer data points. The area with the greatest density, most data points, (the white/light blue inner circle) tells us that among the data the greatest number of observations have around a little less than 75% admission rate and a completion rate of around a little over 50%. An interesting section depicted in this graph is the section of purple, in the upper left side, that deviates from the regular circular shape of the heatmap. Although most of the data points are clustered around a similar area and then spread out from there, that section shows another grouping of data points. This tells us that based on this data, schools with less than a 50% admission rate and more specifically schools with a less than 25% admission rate have a higher completion rate of closer to 100%.
+
+### Scatter Plot
+
+```{r, echo = FALSE}
+#Scatter plot comparing admission rate & net price for schools of the same state (PA), location type (Town), Campus type (Main Campus), and approximate enrollment size (<4000) as Bucknell University
+admit.rate = CollegeData$AdmitRate[CollegeData$State == "PA" & CollegeData$Locale == "Town"
+                                   & Enrollment < 4000 & CollegeData$Main == "Main Campus"]
+net.price = CollegeData$NetPrice[CollegeData$State == "PA" & CollegeData$Locale == "Town"
+                                 & Enrollment < 4000 & CollegeData$Main == "Main Campus"]
+college.name = CollegeData$Name[CollegeData$State == "PA" & CollegeData$Locale == "Town"
+                                & Enrollment < 4000 & CollegeData$Main == "Main Campus"]
+scatterplot_data = data.frame(admit.rate, net.price, college.name)
+
+ggplot(scatterplot_data, aes(x = admit.rate*100, y = net.price, color = college.name)) +
+  geom_point(alpha = 2, size = 3) +
+  labs(x = "Admission Rate", y = "Average Net Price (cost minus aid)",
+       color = "Name of the School", title = "Scatter Plot of Admission Rate & Net Price", 
+       subtitle = "For schools of the same state, location type, campus type,\n and approximate enrollment size as Bucknell University") +
+  scale_color_brewer(palette = "Set1") +
+  scale_x_continuous(labels = function(x)paste(x,"%")) +
+  theme_light()
+```
+**Average Net Price Given Admission Rate**
+This graph uses the CollegeScores data set from the Lock5Data package. This data set includes information on all US post-secondary schools collected by the Department of Education for the College Scorecard. There are 6141 observations that include 37 variables. This graph looks at the net.price variable given the admit.rate variable for 9 colleges displaying their name. The net.price variable is the average net price (cost minus aid), for each school and the admit.rate variable is the admission rate for each school. The Scatter Plot of Admission Rate & Net Price depicts and compares the schools of the same state, location type, campus type, and approximate enrollment size as Bucknell University. These nine schools are all schools that are in Pennsylvania, are located in a town, are a main campus, and have an enrollment size of less than 4000 students. This allows us to see how Bucknell University compares to these other very similar schools and based on the scatter plot we can see a distinct difference. The other colleges, not including Bucknell University, are clustered near the bottom right of the scatter plot showing the higher admission rates and lower average net prices of these school. More specifically, these schools have admission rates greater than 60% and all have an average net price less than 26,000 dollars. While on the other hand Bucknell University is at the upper left of the graph with a significantly higher average net price and a significanly lower admission rate. Specifically, Bucknell University has an admission rate of 31.08% and an average net price of 40,976 dollars. This signifies to us that although these 9 schools all have very similar traits, a higher admission rate can be associated with a lower average net price and a lower admission rate can be associated with a higher average net price.

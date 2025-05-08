@@ -1,0 +1,22 @@
+---
+title: "Andrea Potvin"
+image: "potvin.jpg"
+color1: "#69b39f"
+color2: "#e695b9"
+angle: 130
+links:
+  - label: Linkedin
+    url: "https://www.linkedin.com/in/andrea-potvin/"
+  - label: Email
+    url: "mailto:ampotvin@icloud.com"
+output:
+  postcards::onofre
+site: distill::distill_website
+---
+
+## About Me
+Hello! My name is Andrea Potvin, and I'm a student at Bucknell University from Marblehead, Massachusetts. I am part of the Class of 2027, majoring in Economics and minoring in Applied Statistics.
+
+This website is a showcase of the projects I have worked on as part of my Visualizations and Computing course during the spring of 2025. It includes a section featuring some of my favorite projects from the course, as well as a section exploring a dataset. Details of this dataset story are highlighted in the poster tab!
+
+I hope you enjoy exploring my work!

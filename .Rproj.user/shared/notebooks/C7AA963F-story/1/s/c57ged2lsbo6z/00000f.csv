@@ -1,0 +1,8 @@
+"0","#Data Sets"
+"0","hipHop = Spotify[Spotify$track_genre == ""hip-hop"", ]"
+"0","rock = Spotify[Spotify$track_genre == ""rock"", ]"
+"0","country = Spotify[Spotify$track_genre == ""country"", ]"
+"0","rnb = Spotify[Spotify$track_genre == ""country"", ]"
+"0","electronic = Spotify[Spotify$track_genre == ""electronic"", ]"
+"0","indie = Spotify[Spotify$track_genre == ""indie"", ]"
+"0","folk = Spotify[Spotify$track_genre == ""folk"", ]"

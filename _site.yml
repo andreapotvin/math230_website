@@ -1,0 +1,15 @@
+name: "math230_website"
+title: "Andrea Potvin"
+description: |
+  Andrea Potvin
+output_dir: "docs"
+theme: theme.css
+navbar:
+  right:
+    - text: "Art Exhibit"
+      href: exhibit.html
+    - text: "Poster"
+      href: poster.html
+    - text: "Spotify"
+      href: story.html
+output: distill::distill_article
