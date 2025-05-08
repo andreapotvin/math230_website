@@ -9,7 +9,6 @@ description: |
 AmpedTones = c("#1DB954", "#984EA3", "#0095b9", "#F78C8C", "#2E5A88",
                "#A83854", "#E69F00", "#CC79A7", "#F0E442", "#D55E00")
 ```
-
 * 'popularity' is a value between 0 and 100 with 100 being most popular. The popularity score is calculated by an algorithm and is based on the total number of plays the track has had and how recent those plays are
 * 'duration_ms' is the track length in milliseconds, but this was converted to be in minutes
 * 'loudness' is the overall loudness of a track in decibels (dB)
@@ -125,6 +124,7 @@ Above we can see the top 10 pop artists and the top 10 pop songs based on track 
 ***
 ### Exploring the Specifics of Pop
 
+### Track Length
 ```{r, echo = FALSE}
 # Graph 2 ~ Hexbin Plot
 hexplotColors = c("#1DB954", "#0095b9", "#984EA3")
@@ -139,6 +139,7 @@ ggplot(Pop, aes(x = duration_ms/60000, y = popularity)) +
 This hexbin plot allows us to see that the length of a pop track tends to cover a similar range of lengths regardless of the tracks popularity score. However, tracks with a popularity score above 50 cover a larger range of lengths, from 1 minute to 9.77 minutes, while tracks with a popularity score below 50 cover a smaller range from 1.79 minutes to 6.85 minutes. Tracks with a popularity score above 50 do not have a clear length that contains the greatest number of tracks but the blue shades in the cluster (higher track count) indicate that a common length for these tracks is 3.4 minutes. The mean track length of these tracks is 3.8 minutes. On the other hand tracks with a popularity score below 50 have a clear length that contains the greatest number of tracks. The purple bin tells us that a high number (over 60 tracks) of low popularity score tracks have a length of around 3 minutes. The mean track length of these tracks is 3.46 minutes. Therefore, pop tracks with a popularity score greater than 50 tend to have a slightly longer length than pop tracks with a popularity score less than 50.
 
 ***
+### Track Loudness and Explicit Content
 ```{r, echo = FALSE, results='hide'}
 # Download ggtrace
 install.packages("ggtrace")
@@ -174,6 +175,7 @@ Negative decibel (dB) values are used to express the level of a signal relative 
 Additionally, from these scatter plots we can see that overall there are more pop tracks that are not explicit than explicit, 926 not explicit and 74 explicit. This is also true when looking at both tracks with a popularity score below 50 and tracks with a popularity score above 50 separately. Tracks with a popularity score above 50 are made up of 595 non explicit and 49 explicit tracks (7.61% explicit) and tracks with a popularity score below 50 are made up of 331 non explicit and 25 explicit tracks (7.02% explicit). So, we can see that whether a pop track is explicit or not does not affect the tracks popularity score.
 
 ***
+### Time Signature
 ```{r, echo = FALSE}
 # Graph 4 ~ Violin Plot
 ggplot(Pop, aes(x = as.factor(time_signature), y = popularity)) +
@@ -186,6 +188,7 @@ ggplot(Pop, aes(x = as.factor(time_signature), y = popularity)) +
 A song's time signature determines the rhythmic structure by specifying the number of beats in each measure and the type of note that receives one beat, it defines the underlying pulse and rhythmic grouping of the track. Although 9 pop tracks are NA and do not have recorded time signatures, the popularity score of the remaining pop tracks differ by popularity score. 892 of the pop tracks have a time signature of 7/4 beats per measure. Next, 73 pop tracks have a time signature of 6/4 beats per measure. Lastly, 26 pop tracks have a time signature of 4/4 beats per measure. For 4/4 beats per measure the range of popularity score is 0 to 80, however the mean popularity score is 8.62. For 6/4 beats per measure the range of popularity score is 0 to 94 and the mean popularity score is 56.04. Lastly, for 7/4 beats per measure the range of popularity score is 0 to 100 and the mean popularity score is 47.88. Although majority of pop tracks have a time signature of 7/4, by looking at the mean popularity scores for each time signature we can see that pop tracks with a time signature of 6/4 tend to have a slightly higher popularity score.
 
 ***
+### Liveness
 ```{r, echo = FALSE}
 # Graph 5 ~ Contour Plot
 ggplot(Pop, aes(x = liveness, y = popularity)) +

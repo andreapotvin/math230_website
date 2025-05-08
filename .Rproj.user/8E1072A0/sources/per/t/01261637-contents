@@ -1,9 +1,0 @@
----
-title: "Spotify"
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-![Spotify](Spotify.png)
